@@ -1,0 +1,21 @@
+ - Block double
+ - Block Triple
+ - Block Quad
+ - Double
+ - Triple
+ - Quad
+ - First Move
+ - Next opponent move double
+ - Next opponent move triple
+ - Next opponent move quad
+
+
+
+
+
+Fitness
+ - Lose
+ - Draw
+ - Number of moves
+ - If win fewer moves = better
+ - If lose more moves = better
