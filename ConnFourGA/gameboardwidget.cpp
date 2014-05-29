@@ -10,7 +10,7 @@ GameboardWidget::GameboardWidget(QWidget *parent) :
     m_blackPiece.load("black_piece.png", "png");
 
     setMouseTracking(true);
-    m_drawPiece = true;
+    m_humanPlayer = true;
     m_pieceIndex = 0;
 
     m_leftBoardOffset = 13;
@@ -27,12 +27,16 @@ QSize GameboardWidget::minimumSizeHint() const
 
 void GameboardWidget::activateHumanPlayer()
 {
-    // TODO
+    m_humanPlayer = true;
+    setMouseTracking(true);
+    update();
 }
 
 void GameboardWidget::deactivateHumanPlayer()
 {
-    // TODO
+    m_humanPlayer = false;
+    setMouseTracking(false);
+    update();
 }
 
 void GameboardWidget::paintEvent(QPaintEvent *)
@@ -41,7 +45,7 @@ void GameboardWidget::paintEvent(QPaintEvent *)
 
     painter.drawImage(0, 60, m_gameboardImage);
 
-    if (m_drawPiece) {
+    if (m_humanPlayer) {
         qDebug() << "Piece Index: " << m_pieceIndex;
         double drawPiecePos = (m_pieceIndex*m_indexMultiplier)+m_leftBoardOffset;
         painter.drawImage(drawPiecePos, 0, m_redPiece);

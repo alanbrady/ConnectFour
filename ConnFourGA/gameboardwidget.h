@@ -34,7 +34,7 @@ private:
     int m_boardHeight;
 
     int m_pieceIndex;
-    bool m_drawPiece;
+    bool m_humanPlayer;
 
 };
 
