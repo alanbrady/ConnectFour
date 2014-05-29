@@ -13,10 +13,10 @@ GameboardWidget::GameboardWidget(QWidget *parent) :
     m_drawPiece = true;
     m_pieceIndex = 0;
 
-    m_leftBoardOffset = 10;
+    m_leftBoardOffset = 13;
     m_rightBoardOffset = 10;
-    m_indexMultiplier = 61.43;
-    m_boardWidth = 451;
+    m_indexMultiplier = 60.9;
+    m_boardWidth = 458;
     m_boardHeight = 460;
 }
 
