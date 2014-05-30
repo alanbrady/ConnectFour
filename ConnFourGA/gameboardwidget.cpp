@@ -18,6 +18,11 @@ GameboardWidget::GameboardWidget(QWidget *parent) :
     m_indexMultiplier = 60.9;
     m_boardWidth = 458;
     m_boardHeight = 460;
+    m_animationTimeout = 33.3;
+
+    m_animationTimer = new QTimer(this);
+    connect (m_animationTimer, SIGNAL(timeout()),
+             this, SLOT(chipDropAnimation()));
 }
 
 QSize GameboardWidget::minimumSizeHint() const
@@ -39,16 +44,21 @@ void GameboardWidget::deactivateHumanPlayer()
     update();
 }
 
+void GameboardWidget::chipDropAnimation()
+{
+
+}
+
 void GameboardWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
     painter.drawImage(0, 60, m_gameboardImage);
 
-    if (m_humanPlayer) {
+    if (m_humanPlayer && !m_isAnimating) {
         qDebug() << "Piece Index: " << m_pieceIndex;
         double drawPiecePos = (m_pieceIndex*m_indexMultiplier)+m_leftBoardOffset;
-        painter.drawImage(drawPiecePos, 0, m_redPiece);
+        painter.drawImage(drawPiecePos, m_chipYPos, m_redPiece);
     }
 
 }
@@ -65,5 +75,12 @@ void GameboardWidget::mouseMoveEvent(QMouseEvent *event)
             m_pieceIndex = newPieceIndex;
             update();
         }
+    }
+}
+
+void GameboardWidget::mouseReleaseEvent(QMouseEvent *)
+{
+    if (!m_isAnimating) {
+
     }
 }
