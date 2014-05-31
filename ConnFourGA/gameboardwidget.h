@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QTimer>
+#include "gameboard.h"
 
 class GameboardWidget : public QWidget
 {
@@ -15,7 +16,7 @@ public:
         WHITE = 2
     };
 
-    explicit GameboardWidget(QWidget *parent = 0);
+    explicit GameboardWidget(const GameBoard* board, QWidget *parent = 0);
 
     QSize minimumSizeHint() const;
 signals:
@@ -35,6 +36,7 @@ private:
     QImage m_redPiece;
     QImage m_blackPiece;
     QTimer *m_animationTimer;
+    const GameBoard *m_board;
 
     int m_leftBoardOffset;
     int m_rightBoardOffset;
@@ -42,6 +44,8 @@ private:
     int m_boardWidth;
     int m_boardHeight;
     double m_animationTimeout;
+    double m_animationVelocity;
+    double m_animationAcceleration;
 
     double m_chipYPos;
     double m_chipXPos;

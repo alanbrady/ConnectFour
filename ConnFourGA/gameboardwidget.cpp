@@ -2,8 +2,8 @@
 #include <QDebug>
 #include <QMouseEvent>
 
-GameboardWidget::GameboardWidget(QWidget *parent) :
-    QWidget(parent)
+GameboardWidget::GameboardWidget(const GameBoard* board, QWidget *parent) :
+    QWidget(parent), m_board(board)
 {
     m_gameboardImage.load("game_board.png", "png");
     m_redPiece.load("red_piece.png", "png");
@@ -13,7 +13,7 @@ GameboardWidget::GameboardWidget(QWidget *parent) :
     m_humanPlayer = true;
     m_pieceIndex = 0;
 
-    m_leftBoardOffset = 13;
+    m_leftBoardOffset = 15.5;
     m_rightBoardOffset = 10;
     m_indexMultiplier = 60.9;
     m_boardWidth = 458;
@@ -56,7 +56,7 @@ void GameboardWidget::paintEvent(QPaintEvent *)
     painter.drawImage(0, 60, m_gameboardImage);
 
     if (m_humanPlayer && !m_isAnimating) {
-        qDebug() << "Piece Index: " << m_pieceIndex;
+//        qDebug() << "Piece Index: " << m_pieceIndex;
         double drawPiecePos = (m_pieceIndex*m_indexMultiplier)+m_leftBoardOffset;
         painter.drawImage(drawPiecePos, m_chipYPos, m_redPiece);
     }
