@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "gameboardwidget.h"
+#include "connectfourgame.h"
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +20,7 @@ public:
 private:
     Ui::MainWindow *ui;
     GameboardWidget* m_gameboard;
+    ConnectFourGame game;
 };
 
 #endif // MAINWINDOW_H

@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QVBoxLayout* layout = new QVBoxLayout();
-    m_gameboard = new GameboardWidget(this);
+    m_gameboard = new GameboardWidget(&(game.getBoard()), this);
     layout->addWidget(m_gameboard);
     ui->centralWidget->setLayout(layout);
 }
