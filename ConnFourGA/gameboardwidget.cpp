@@ -18,7 +18,7 @@ GameboardWidget::GameboardWidget(ConnectFourGame* game, QWidget *parent) :
     m_leftBoardOffset = 14.8;
     m_rightBoardOffset = 10;
     m_topBoardOffset = 78;
-    m_indexMultiplier = 60;
+    m_indexMultiplier = 60.1;
     m_boardWidth = 458;
     m_boardHeight = 460;
     m_animationTimeout = 33.3;
@@ -60,24 +60,41 @@ void GameboardWidget::paintEvent(QPaintEvent *)
     painter.drawImage(0, 60, m_gameboardImage);
 
     GameBoard board = m_game->getBoard();
-    for (int i = 0; i < board.getColCount(); i++) {
-        for (int k = 0; k < board.getRowCount(); k++) {
-            QImage* chipColorImage = 0;
-            ConnectFourGame::PlayerColor chipColor =
-                    (ConnectFourGame::PlayerColor)board[i][k];
-            if (chipColor == ConnectFourGame::BLACK)
-                chipColorImage = &m_blackPiece;
-            else if (chipColor == ConnectFourGame::RED)
-                chipColorImage = &m_redPiece;
-            else continue;
+    for (int row = 0; row < board.getRowCount(); row++) {
+        GameBoardRow boardRow = board[row];
+        for (int col = 0; col < board.getColCount(); col++) {
+            if (boardRow[col] != ConnectFourGame::EMPTY) {
+                QImage* chipImage = 0;
+                if (boardRow[col] == ConnectFourGame::BLACK)
+                    chipImage = &m_blackPiece;
+                else
+                    chipImage = &m_redPiece;
+                double drawPieceY = m_boardHeight -
+                        ((row*m_indexMultiplier)+m_topBoardOffset);
+                double drawPieceX = (col*m_indexMultiplier)+m_leftBoardOffset;
+                painter.drawImage(drawPieceX, drawPieceY, (*chipImage));
+            }
 
-            double drawPiecePosX = ((i*m_indexMultiplier)+m_leftBoardOffset);
-            double drawPiecePosY = m_boardHeight -
-                    ((k*m_indexMultiplier)+m_topBoardOffset);
-
-            painter.drawImage(drawPiecePosX, drawPiecePosY, (*chipColorImage));
         }
     }
+//    for (int i = 0; i < board.getColCount(); i++) {
+//        for (int k = 0; k < board.getRowCount(); k++) {
+//            QImage* chipColorImage = 0;
+//            ConnectFourGame::PlayerColor chipColor =
+//                    (ConnectFourGame::PlayerColor)board[i][k];
+//            if (chipColor == ConnectFourGame::BLACK)
+//                chipColorImage = &m_blackPiece;
+//            else if (chipColor == ConnectFourGame::RED)
+//                chipColorImage = &m_redPiece;
+//            else continue;
+
+//            double drawPiecePosX = ((i*m_indexMultiplier)+m_leftBoardOffset);
+//            double drawPiecePosY = m_boardHeight -
+//                    ((k*m_indexMultiplier)+m_topBoardOffset);
+
+//            painter.drawImage(drawPiecePosX, drawPiecePosY, (*chipColorImage));
+//        }
+//    }
 
     if (m_humanPlayer && !m_isAnimating) {
         QImage* currentPlayerColor = 0;
@@ -88,7 +105,6 @@ void GameboardWidget::paintEvent(QPaintEvent *)
 
         if (currentPlayerColor != 0) {
             double drawPiecePos = (m_pieceIndex*m_indexMultiplier)+m_leftBoardOffset;
-//            qDebug() << "DrawPiecePosX" << drawPiecePos;
             painter.drawImage(drawPiecePos, m_chipYPos, (*currentPlayerColor));
         }
     }
@@ -116,8 +132,8 @@ void GameboardWidget::mouseMoveEvent(QMouseEvent *event)
 void GameboardWidget::mouseReleaseEvent(QMouseEvent *)
 {
     if (m_humanPlayer && !m_isAnimating) {
-        qDebug() << "pieceIndex" << m_pieceIndex;
-        qDebug() << "Made move: " << m_game->makeMove(m_pieceIndex, m_game->getCurrentPlayer());
+//        qDebug() << "pieceIndex" << m_pieceIndex;
+        m_game->makeMove(m_pieceIndex, m_game->getCurrentPlayer());
         update();
     }
 }
