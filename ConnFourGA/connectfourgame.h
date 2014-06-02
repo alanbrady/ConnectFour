@@ -15,6 +15,7 @@ public:
         EMPTY = 0,
     };
 
+public:
     void setBoard(const GameBoard& board) { m_board = board; }
     const GameBoard& getBoard() const { return m_board; }
 
@@ -23,11 +24,13 @@ public:
     int countConnsDiagRight(const int row, const int col) const;
     int countConnsDiagLeft(const int row, const int col) const;
     int countConnsVertical(const int row, const int col) const;
+    PlayerColor getCurrentPlayer() const { return m_currentPlayer; }
 
     bool makeMove(const int col, PlayerColor color);
+
 private:
     GameBoard m_board;
-
+    PlayerColor m_currentPlayer;
 };
 
 

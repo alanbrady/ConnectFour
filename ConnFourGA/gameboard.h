@@ -12,6 +12,8 @@ public:
     const GameBoardRow& operator[](int i) const { return m_rows[i]; }
 
     void clearBoard();
+    int getRowCount() const { return 6; }
+    int getColCount() const { return 7; }
 
 private:
     GameBoardRow m_rows[6];

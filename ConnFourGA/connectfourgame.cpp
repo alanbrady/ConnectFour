@@ -2,11 +2,13 @@
 
 ConnectFourGame::ConnectFourGame()
 {
+    m_currentPlayer = BLACK;
 }
 
 ConnectFourGame::ConnectFourGame(const GameBoard &board)
 {
     m_board = board;
+    m_currentPlayer = BLACK;
 }
 
 bool ConnectFourGame::checkForWin() const
@@ -73,11 +75,11 @@ int ConnectFourGame::countConnsVertical(const int row, const int col) const
 bool ConnectFourGame::makeMove(const int col, ConnectFourGame::PlayerColor color)
 {
 
-    if (m_board[5][col] == 0 && col >= 0 && col <= 6) {
+    if (m_board[col][5] == 0 && col >= 0 && col <= 6) {
         int i = 0;
-        while (m_board[i][col] != 0)
+        while (m_board[col][i] != 0)
             i++;
-        m_board[i][col] = color;
+        m_board[col][i] = color;
         return true;
     } else
         return false;

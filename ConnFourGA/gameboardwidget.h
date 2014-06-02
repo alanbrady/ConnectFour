@@ -5,21 +5,16 @@
 #include <QImage>
 #include <QPainter>
 #include <QTimer>
-#include "gameboard.h"
+#include "connectfourgame.h"
+
 
 class GameboardWidget : public QWidget
 {
     Q_OBJECT
 public:
-    enum ChipColor {
-        BLACK = 1,
-        WHITE = 2
-    };
-
-    explicit GameboardWidget(const GameBoard* board, QWidget *parent = 0);
+    explicit GameboardWidget(ConnectFourGame* game, QWidget *parent = 0);
 
     QSize minimumSizeHint() const;
-signals:
 
 public slots:
     void activateHumanPlayer();
@@ -36,21 +31,24 @@ private:
     QImage m_redPiece;
     QImage m_blackPiece;
     QTimer *m_animationTimer;
-    const GameBoard *m_board;
+    ConnectFourGame *m_game;
 
-    int m_leftBoardOffset;
-    int m_rightBoardOffset;
-    int m_indexMultiplier;
+    double m_leftBoardOffset;
+    double m_rightBoardOffset;
+    double m_topBoardOffset;
+    double m_indexMultiplier;
     int m_boardWidth;
     int m_boardHeight;
     double m_animationTimeout;
     double m_animationVelocity;
     double m_animationAcceleration;
 
+    double m_floor;
     double m_chipYPos;
     double m_chipXPos;
     bool m_isAnimating;
-    ChipColor m_currentChipColor;
+//    ConnectFourGame::PlayerColor m_currentChipColor;
+    double m_gravAccel;
 
     int m_pieceIndex;
     bool m_humanPlayer;
