@@ -19,6 +19,8 @@ public:
 public slots:
     void activateHumanPlayer();
     void deactivateHumanPlayer();
+
+private slots:
     void chipDropAnimation();
 
 protected:
@@ -31,6 +33,8 @@ private:
     QImage m_redPiece;
     QImage m_blackPiece;
     QTimer *m_animationTimer;
+    double m_animationTimeMsecs;
+    double m_animationFloor;
     ConnectFourGame *m_game;
 
     double m_leftBoardOffset;
@@ -52,6 +56,10 @@ private:
 
     int m_pieceIndex;
     bool m_humanPlayer;
+
+    double calculateAnimationFloor();
+
+
 
 };
 
