@@ -6,6 +6,7 @@ SOURCES += ../ConnFourGA/connectfourgame.cpp \
 HEADERS  += ../ConnFourGA/connectfourgame.h \
     ../ConnFourGA/gameboard.h \
     ../ConnFourGA/gameboardrow.h \
-    abstractplayer.h
+    abstractplayer.h \
+    HumanPlayer.h
 
 
