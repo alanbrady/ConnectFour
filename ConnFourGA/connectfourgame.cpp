@@ -11,6 +11,11 @@ ConnectFourGame::ConnectFourGame(const GameBoard &board)
     m_currentPlayer = BLACK;
 }
 
+ConnectFourGame::PlayerColor ConnectFourGame::getColorAt(const int row, const int col)
+{
+    return ConnectFourGame::PlayerColor(m_board[row][col]);
+}
+
 bool ConnectFourGame::checkForWin() const
 {
     for (int row = 0; row < 6; row++) {

@@ -19,6 +19,7 @@ public:
     void setBoard(const GameBoard& board) { m_board = board; }
     const GameBoard& getBoard() const { return m_board; }
 
+    ConnectFourGame::PlayerColor getColorAt(const int row, const int col);
     bool checkForWin() const;
     int countConnsRight(const int row, const int col) const;
     int countConnsDiagRight(const int row, const int col) const;
