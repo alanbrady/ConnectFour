@@ -27,6 +27,7 @@ public:
     PlayerColor getCurrentPlayer() const { return m_currentPlayer; }
 
     bool makeMove(const int col, PlayerColor color);
+    bool canMakeMove(const int col);
 
 private:
     GameBoard m_board;

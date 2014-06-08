@@ -75,7 +75,7 @@ int ConnectFourGame::countConnsVertical(const int row, const int col) const
 bool ConnectFourGame::makeMove(const int col, ConnectFourGame::PlayerColor color)
 {
 
-    if (m_board[5][col] == 0 && col >= 0 && col <= 6) {
+    if (canMakeMove(col)) {
         int i = 0;
         while (m_board[i][col] != 0)
             i++;
@@ -83,4 +83,9 @@ bool ConnectFourGame::makeMove(const int col, ConnectFourGame::PlayerColor color
         return true;
     } else
         return false;
+}
+
+bool ConnectFourGame::canMakeMove(const int col)
+{
+    return m_board[5][col] == 0 && col >= 0 && col <= 6;
 }

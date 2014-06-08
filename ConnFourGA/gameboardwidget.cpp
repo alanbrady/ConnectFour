@@ -21,8 +21,11 @@ GameboardWidget::GameboardWidget(ConnectFourGame* game, QWidget *parent) :
     m_indexMultiplier = 60.1;
     m_boardWidth = 458;
     m_boardHeight = 460;
-    m_animationTimeout = 33.3;
+    m_animationTimeout = 10;
     m_gravAccel = 9.81;
+    m_bounceVelocityConstant = 0.25;
+
+    m_maxBounces = 5;
 
     m_animationTimer = new QTimer(this);
     connect (m_animationTimer, SIGNAL(timeout()),
@@ -50,15 +53,25 @@ void GameboardWidget::deactivateHumanPlayer()
 
 void GameboardWidget::chipDropAnimation()
 {
-    double time = (m_animationTimeMsecs/100);
-    m_chipYPos = 0.5*m_gravAccel*time*time;
+    double time = (m_animationTimeMsecs/60);
+    double newYPos = m_chipBaseYPos + m_animationVelocity*time +
+            0.5*m_gravAccel*time*time;
     m_animationTimeMsecs += m_animationTimeout;
     update();
-    if (m_chipYPos > m_animationFloor) {
-        m_isAnimating = false;
-        m_chipYPos = 0;
-        m_animationTimer->stop();
-    }
+    if (newYPos > m_animationFloor) {
+        m_animationVelocity = -1*m_gravAccel*time*m_bounceVelocityConstant;
+        if (m_bounces >= m_maxBounces || (abs(m_animationVelocity) < 5)) {
+            m_isAnimating = false;
+            m_chipYPos = 0;
+            m_animationTimer->stop();
+            m_game->makeMove(m_pieceIndex, m_game->getCurrentPlayer());
+        } else {
+            m_bounces++;
+            m_animationTimeMsecs = m_animationTimeout;
+            m_chipBaseYPos = m_animationFloor - (newYPos - m_animationFloor);
+       }
+    } else
+        m_chipYPos = newYPos;
 }
 
 void GameboardWidget::paintEvent(QPaintEvent *)
@@ -123,11 +136,14 @@ void GameboardWidget::mouseReleaseEvent(QMouseEvent *)
 {
     if (m_humanPlayer && !m_isAnimating) {
 //        qDebug() << "pieceIndex" << m_pieceIndex;
-        if (m_game->makeMove(m_pieceIndex, m_game->getCurrentPlayer())) {
+        if (m_game->canMakeMove(m_pieceIndex)) {
             m_animationFloor = calculateAnimationFloor();
             m_animationTimer->start(m_animationTimeout);
             m_isAnimating = true;
             m_animationTimeMsecs = 0;
+            m_animationVelocity = 0;
+            m_chipBaseYPos = 0;
+            m_bounces = 0;
             update();
         }
     }

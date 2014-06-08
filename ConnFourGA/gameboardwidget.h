@@ -36,6 +36,11 @@ private:
     double m_animationTimeMsecs;
     double m_animationFloor;
     ConnectFourGame *m_game;
+    double m_chipBaseYPos;
+    double m_bounces;
+    double m_maxBounces;
+    double m_bounceVelocityConstant;
+
 
     double m_leftBoardOffset;
     double m_rightBoardOffset;
