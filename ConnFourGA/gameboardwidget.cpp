@@ -23,7 +23,7 @@ GameboardWidget::GameboardWidget(ConnectFourGame* game, QWidget *parent) :
     m_boardHeight = 460;
     m_animationTimeout = 10;
     m_gravAccel = 9.81;
-    m_bounceVelocityConstant = 0.25;
+    m_bounceVelocityConstant = 0.3;
 
     m_maxBounces = 5;
 
@@ -78,8 +78,6 @@ void GameboardWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    painter.drawImage(0, 60, m_gameboardImage);
-
     GameBoard board = m_game->getBoard();
     for (int row = 0; row < board.getRowCount(); row++) {
         GameBoardRow boardRow = board[row];
@@ -111,6 +109,8 @@ void GameboardWidget::paintEvent(QPaintEvent *)
             painter.drawImage(drawPiecePos, m_chipYPos, (*currentPlayerColor));
         }
     }
+
+    painter.drawImage(0, 60, m_gameboardImage);
 
 }
 
