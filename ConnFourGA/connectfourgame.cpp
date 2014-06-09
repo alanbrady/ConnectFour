@@ -196,8 +196,13 @@ void ConnectFourGame::startGame()
     if (m_playerOne != 0 && m_playerTwo != 0) {
         if (m_playerOne->getColor() != EMPTY &&
                 m_playerTwo->getColor() != EMPTY) {
+            m_board.clearBoard();
             do {
-                m_currentPlayer->getPlayerMove();
+                int move = -1;
+                do {
+                    move = m_currentPlayer->getPlayerMove();
+                } while(!canMakeMove(move));
+                makeMove(move, m_currentPlayer->getColor());
                 swapCurrentPlayer();
             } while (!checkForWin());
         } else emit error("Error: player colors not set");
