@@ -1,13 +1,19 @@
 #ifndef CONNECTFOURGAME_H
 #define CONNECTFOURGAME_H
 
+#include <stdlib.h>
+#include <time.h>
 #include "gameboard.h"
+#include "abstractplayer.h"
+#include "randomplayer.h"
 
 class ConnectFourGame
 {
 public:
     ConnectFourGame();
+    ConnectFourGame(AbstractPlayer* playerOne, AbstractPlayer* playerTwo);
     ConnectFourGame(const GameBoard& board);
+    ~ConnectFourGame();
 
     enum PlayerColor {
         BLACK = 1,
@@ -25,14 +31,25 @@ public:
     int countConnsDiagRight(const int row, const int col) const;
     int countConnsDiagLeft(const int row, const int col) const;
     int countConnsVertical(const int row, const int col) const;
-    PlayerColor getCurrentPlayer() const { return m_currentPlayer; }
-
+    PlayerColor getCurrentPlayerColor() const;
     bool makeMove(const int col, PlayerColor color);
     bool canMakeMove(const int col);
 
+    void setPlayers(AbstractPlayer* playerOne, AbstractPlayer* playerTwo);
+    void setPlayerOne(AbstractPlayer* playerOne);
+    void setPlayerOneColor(PlayerColor color);
+    void setPlayerTwo(AbstractPlayer* playerTwo);
+    void setPlayerTwoColor(PlayerColor color);
+    void swapPlayerColors();
+    void randomlyAssignColors();
+    void setFirstPlayer();
+
 private:
     GameBoard m_board;
-    PlayerColor m_currentPlayer;
+    AbstractPlayer* m_currentPlayer;
+    AbstractPlayer* m_playerOne;
+    AbstractPlayer* m_playerTwo;
+
 };
 
 

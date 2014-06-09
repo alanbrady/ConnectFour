@@ -1,25 +1,28 @@
 #ifndef ABSTRACTPLAYER_H
 #define ABSTRACTPLAYER_H
 
-#endif // ABSTRACTPLAYER_H
-
 #include "gameboard.h"
-#include "connectfourgame.h"
+//#include "connectfourgame.h"
+
+//class ConnectFourGame;
 
 class AbstractPlayer {
 public:
-    AbstractPlayer(ConnectFourGame::PlayerColor color)
+    AbstractPlayer(int color)
         {
             m_color = color;
         }
+    AbstractPlayer() { m_color = 0; }
     virtual ~AbstractPlayer() {}
 
-    ConnectFourGame::PlayerColor getColor() { return m_color; }
-
+    int getColor() const { return m_color; }
+    void setPlayerColor(int color) { m_color = color; }
 
     virtual int getPlayerMove(const GameBoard& board) = 0;
     virtual bool isHuman() const = 0;
 
 private:
-    ConnectFourGame::PlayerColor m_color;
+    int m_color;
 };
+
+#endif // ABSTRACTPLAYER_H

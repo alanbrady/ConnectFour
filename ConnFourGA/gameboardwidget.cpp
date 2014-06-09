@@ -64,7 +64,7 @@ void GameboardWidget::chipDropAnimation()
             m_isAnimating = false;
             m_chipYPos = 0;
             m_animationTimer->stop();
-            m_game->makeMove(m_pieceIndex, m_game->getCurrentPlayer());
+            m_game->makeMove(m_pieceIndex, m_game->getCurrentPlayerColor());
         } else {
             m_bounces++;
             m_animationTimeMsecs = m_animationTimeout;
@@ -99,9 +99,9 @@ void GameboardWidget::paintEvent(QPaintEvent *)
 
     if (m_humanPlayer ) {
         QImage* currentPlayerColor = 0;
-        if (m_game->getCurrentPlayer() == ConnectFourGame::BLACK)
+        if (m_game->getCurrentPlayerColor() == ConnectFourGame::BLACK)
             currentPlayerColor = &m_blackPiece;
-        else if (m_game->getCurrentPlayer() == ConnectFourGame::RED)
+        else if (m_game->getCurrentPlayerColor() == ConnectFourGame::RED)
             currentPlayerColor = &m_redPiece;
 
         if (currentPlayerColor != 0) {
@@ -135,7 +135,6 @@ void GameboardWidget::mouseMoveEvent(QMouseEvent *event)
 void GameboardWidget::mouseReleaseEvent(QMouseEvent *)
 {
     if (m_humanPlayer && !m_isAnimating) {
-//        qDebug() << "pieceIndex" << m_pieceIndex;
         if (m_game->canMakeMove(m_pieceIndex)) {
             m_animationFloor = calculateAnimationFloor();
             m_animationTimer->start(m_animationTimeout);

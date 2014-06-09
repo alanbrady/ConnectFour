@@ -6,6 +6,7 @@
 #include "gameboard.h"
 #include "gameboardrow.h"
 #include "mockplayer.h"
+#include "randomplayer.h"
 
 Q_DECLARE_METATYPE(GameBoard)
 
@@ -22,6 +23,7 @@ private Q_SLOTS:
     void abstractPlayer_getPlayerMove();
     void abstractPlayer_getColor();
     void abstractPlayer_isHuman();
+    void randomPlayer_getMove();
 };
 
 ConnFourGA_Test::ConnFourGA_Test()
@@ -176,6 +178,32 @@ void ConnFourGA_Test::abstractPlayer_isHuman()
     MockPlayer player(&board);
 
     QVERIFY(player.isHuman() == false);
+}
+
+void ConnFourGA_Test::randomPlayer_getMove()
+{
+    GameBoard board;
+    RandomPlayer player;
+    int move = player.getPlayerMove(board);
+    QVERIFY(move >= 0 && move <= 6);
+    move = player.getPlayerMove(board);
+    QVERIFY(move >= 0 && move <= 6);
+    move = player.getPlayerMove(board);
+    QVERIFY(move >= 0 && move <= 6);
+    move = player.getPlayerMove(board);
+    QVERIFY(move >= 0 && move <= 6);
+    move = player.getPlayerMove(board);
+    QVERIFY(move >= 0 && move <= 6);
+    move = player.getPlayerMove(board);
+    QVERIFY(move >= 0 && move <= 6);
+    move = player.getPlayerMove(board);
+    QVERIFY(move >= 0 && move <= 6);
+    move = player.getPlayerMove(board);
+    QVERIFY(move >= 0 && move <= 6);
+    move = player.getPlayerMove(board);
+    QVERIFY(move >= 0 && move <= 6);
+    move = player.getPlayerMove(board);
+    QVERIFY(move >= 0 && move <= 6);
 }
 
 QTEST_APPLESS_MAIN(ConnFourGA_Test)

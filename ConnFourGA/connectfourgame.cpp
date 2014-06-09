@@ -2,13 +2,35 @@
 
 ConnectFourGame::ConnectFourGame()
 {
-    m_currentPlayer = BLACK;
+    m_playerOne = new RandomPlayer();
+    m_playerTwo = new RandomPlayer();
+    randomlyAssignColors();
+    setFirstPlayer();
+}
+
+ConnectFourGame::ConnectFourGame(AbstractPlayer *playerOne, AbstractPlayer *playerTwo)
+{
+    m_playerOne = playerOne;
+    m_playerTwo = playerTwo;
+    randomlyAssignColors();
+    setFirstPlayer();
 }
 
 ConnectFourGame::ConnectFourGame(const GameBoard &board)
 {
     m_board = board;
-    m_currentPlayer = BLACK;
+    m_playerOne = new RandomPlayer();
+    m_playerTwo = new RandomPlayer();
+    randomlyAssignColors();
+    setFirstPlayer();
+}
+
+ConnectFourGame::~ConnectFourGame()
+{
+    if (m_playerOne != 0)
+        delete m_playerOne;
+    if (m_playerTwo != 0)
+        delete m_playerTwo;
 }
 
 ConnectFourGame::PlayerColor ConnectFourGame::getColorAt(const int row, const int col)
@@ -77,6 +99,11 @@ int ConnectFourGame::countConnsVertical(const int row, const int col) const
         return 1;
 }
 
+ConnectFourGame::PlayerColor ConnectFourGame::getCurrentPlayerColor() const
+{
+     return PlayerColor(m_currentPlayer->getColor());
+}
+
 bool ConnectFourGame::makeMove(const int col, ConnectFourGame::PlayerColor color)
 {
 
@@ -93,4 +120,73 @@ bool ConnectFourGame::makeMove(const int col, ConnectFourGame::PlayerColor color
 bool ConnectFourGame::canMakeMove(const int col)
 {
     return m_board[5][col] == 0 && col >= 0 && col <= 6;
+}
+
+void ConnectFourGame::setPlayers(AbstractPlayer *playerOne, AbstractPlayer *playerTwo)
+{
+    if (m_playerOne != 0)
+        delete m_playerOne;
+    if (m_playerTwo != 0)
+        delete m_playerTwo;
+    m_playerOne = playerOne;
+    m_playerTwo = playerTwo;
+    randomlyAssignColors();
+    setFirstPlayer();
+}
+
+void ConnectFourGame::setPlayerOne(AbstractPlayer *playerOne)
+{
+    if (m_playerOne != 0)
+        delete m_playerOne;
+    m_playerOne = playerOne;
+}
+
+void ConnectFourGame::setPlayerOneColor(ConnectFourGame::PlayerColor color)
+{
+    if (m_playerOne != 0)
+        m_playerOne->setPlayerColor(color);
+    setFirstPlayer();
+}
+
+void ConnectFourGame::setPlayerTwo(AbstractPlayer *playerTwo)
+{
+    if (m_playerTwo != 0)
+        delete m_playerTwo;
+    m_playerTwo = playerTwo;
+}
+
+void ConnectFourGame::setPlayerTwoColor(ConnectFourGame::PlayerColor color)
+{
+    if (m_playerTwo != 0)
+        m_playerTwo->setPlayerColor(color);
+    setFirstPlayer();
+}
+
+void ConnectFourGame::swapPlayerColors()
+{
+    PlayerColor color = PlayerColor(m_playerOne->getColor());
+    m_playerOne->setPlayerColor(m_playerTwo->getColor());
+    m_playerTwo->setPlayerColor(color);
+    setFirstPlayer();
+}
+
+void ConnectFourGame::randomlyAssignColors()
+{
+    srand(time(NULL));
+    int randInt = rand()%2;
+    if (randInt == 0) {
+        m_playerOne->setPlayerColor(BLACK);
+        m_playerTwo->setPlayerColor(RED);
+    } else {
+        m_playerOne->setPlayerColor(RED);
+        m_playerTwo->setPlayerColor(BLACK);
+    }
+}
+
+void ConnectFourGame::setFirstPlayer()
+{
+    if (m_playerOne->getColor() == BLACK)
+        m_currentPlayer = m_playerOne;
+    else
+        m_currentPlayer = m_playerTwo;
 }
