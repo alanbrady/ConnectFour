@@ -21,6 +21,9 @@ public:
         EMPTY = 0,
     };
 
+signals:
+    void error(char* errorMsg);
+
 public:
     void setBoard(const GameBoard& board) { m_board = board; }
     const GameBoard& getBoard() const { return m_board; }
@@ -43,6 +46,8 @@ public:
     void swapPlayerColors();
     void randomlyAssignColors();
     void setFirstPlayer();
+    void startGame();
+    void swapCurrentPlayer();
 
 private:
     GameBoard m_board;

@@ -190,3 +190,24 @@ void ConnectFourGame::setFirstPlayer()
     else
         m_currentPlayer = m_playerTwo;
 }
+
+void ConnectFourGame::startGame()
+{
+    if (m_playerOne != 0 && m_playerTwo != 0) {
+        if (m_playerOne->getColor() != EMPTY &&
+                m_playerTwo->getColor() != EMPTY) {
+            do {
+                m_currentPlayer->getPlayerMove();
+                swapCurrentPlayer();
+            } while (!checkForWin());
+        } else emit error("Error: player colors not set");
+    } else emit error("Error: Players not initialized");
+}
+
+void ConnectFourGame::swapCurrentPlayer()
+{
+    if (m_currentPlayer == m_playerOne)
+        m_currentPlayer = m_playerTwo;
+    else
+        m_currentPlayer = m_playerOne;
+}
