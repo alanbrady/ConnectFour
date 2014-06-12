@@ -112,6 +112,8 @@ bool ConnectFourGame::makeMove(const int col, ConnectFourGame::PlayerColor color
         while (m_board[i][col] != 0)
             i++;
         m_board[i][col] = color;
+        emit moveMade(col, color);
+        emit boardUpdated(m_board);
         return true;
     } else
         return false;
@@ -197,16 +199,51 @@ void ConnectFourGame::startGame()
         if (m_playerOne->getColor() != EMPTY &&
                 m_playerTwo->getColor() != EMPTY) {
             m_board.clearBoard();
-            do {
-                int move = -1;
-                do {
-                    move = m_currentPlayer->getPlayerMove();
-                } while(!canMakeMove(move));
-                makeMove(move, m_currentPlayer->getColor());
-                swapCurrentPlayer();
-            } while (!checkForWin());
-        } else emit error("Error: player colors not set");
-    } else emit error("Error: Players not initialized");
+            doGameLoop();
+        } else emit error(QString("Error: player colors not set"));
+    } else emit error(QString("Error: Players not initialized"));
+}
+
+void ConnectFourGame::doGameLoop()
+{
+    int move = -1;
+    PlayerColor color = PlayerColor(m_currentPlayer->getColor());
+    if (m_currentPlayer->isHuman()) {
+        emit getHumanMove(color);
+    } else {
+        move = m_currentPlayer->getPlayerMove(m_board);
+        if (!canMakeMove(move)) {
+            m_currentPlayer->badMoveMade();
+        } else {
+
+            makeMove(move, color);
+            emit moveMade(move, color);
+        }
+        if (checkForWin())
+            emit gameOver();
+        else {
+            swapCurrentPlayer();
+            doGameLoop();
+        }
+    }
+
+
+
+}
+
+void ConnectFourGame::humanMoveMade(const int move)
+{
+    PlayerColor color = PlayerColor(m_currentPlayer->getColor());
+    if (canMakeMove(move)) {
+        makeMove(move, color);
+        if (checkForWin()) {
+            emit gameOver();
+        } else {
+            swapCurrentPlayer();
+            doGameLoop();
+        }
+    } else
+        emit getHumanMove(color);
 }
 
 void ConnectFourGame::swapCurrentPlayer()

@@ -20,6 +20,7 @@ public:
 
     virtual int getPlayerMove(const GameBoard& board) = 0;
     virtual bool isHuman() const = 0;
+    virtual void badMoveMade() {}
 
 private:
     int m_color;

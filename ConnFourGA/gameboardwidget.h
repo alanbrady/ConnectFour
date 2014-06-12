@@ -12,13 +12,19 @@ class GameboardWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GameboardWidget(ConnectFourGame* game, QWidget *parent = 0);
+    explicit GameboardWidget(QWidget *parent = 0);
 
     QSize minimumSizeHint() const;
 
+signals:
+    void humanMove(const int);
+    void animationComplete();
+
 public slots:
-    void activateHumanPlayer();
+    void activateHumanPlayer(ConnectFourGame::PlayerColor color);
     void deactivateHumanPlayer();
+    void moveMade(int move, ConnectFourGame::PlayerColor color);
+    void updateBoard(const GameBoard& gameBoard);
 
 private slots:
     void chipDropAnimation();
@@ -35,7 +41,8 @@ private:
     QTimer *m_animationTimer;
     double m_animationTimeMsecs;
     double m_animationFloor;
-    ConnectFourGame *m_game;
+    GameBoard m_gameBoard;
+    ConnectFourGame::PlayerColor m_currentPlayerColor;
     double m_chipBaseYPos;
     double m_bounces;
     double m_maxBounces;
@@ -63,7 +70,7 @@ private:
     bool m_humanPlayer;
 
     double calculateAnimationFloor();
-
+    void startAnimation();
 
 
 };

@@ -1,14 +1,16 @@
 #ifndef CONNECTFOURGAME_H
 #define CONNECTFOURGAME_H
 
+#include <QObject>
 #include <stdlib.h>
 #include <time.h>
 #include "gameboard.h"
 #include "abstractplayer.h"
 #include "randomplayer.h"
 
-class ConnectFourGame
+class ConnectFourGame : public QObject
 {
+    Q_OBJECT
 public:
     ConnectFourGame();
     ConnectFourGame(AbstractPlayer* playerOne, AbstractPlayer* playerTwo);
@@ -22,7 +24,16 @@ public:
     };
 
 signals:
-    void error(char* errorMsg);
+    void error(QString errorMsg);
+    void moveMade(int move, PlayerColor color);
+    void gameOver();
+    void getHumanMove(PlayerColor color);
+    void boardUpdated(const GameBoard& board);
+
+public slots:
+    void startGame();
+    void doGameLoop();
+    void humanMoveMade(const int move);
 
 public:
     void setBoard(const GameBoard& board) { m_board = board; }
@@ -46,7 +57,7 @@ public:
     void swapPlayerColors();
     void randomlyAssignColors();
     void setFirstPlayer();
-    void startGame();
+
     void swapCurrentPlayer();
 
 private:

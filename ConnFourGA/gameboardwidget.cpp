@@ -2,8 +2,8 @@
 #include <QDebug>
 #include <QMouseEvent>
 
-GameboardWidget::GameboardWidget(ConnectFourGame* game, QWidget *parent) :
-    QWidget(parent), m_game(game)
+GameboardWidget::GameboardWidget(QWidget *parent) :
+    QWidget(parent)
 {
     m_gameboardImage.load("game_board.png", "png");
     m_redPiece.load("red_piece.png", "png");
@@ -37,9 +37,10 @@ QSize GameboardWidget::minimumSizeHint() const
     return QSize(m_boardWidth, m_boardHeight);
 }
 
-void GameboardWidget::activateHumanPlayer()
+void GameboardWidget::activateHumanPlayer(ConnectFourGame::PlayerColor color)
 {
     m_humanPlayer = true;
+    m_currentPlayerColor = color;
     setMouseTracking(true);
     update();
 }
@@ -49,6 +50,19 @@ void GameboardWidget::deactivateHumanPlayer()
     m_humanPlayer = false;
     setMouseTracking(false);
     update();
+}
+
+void GameboardWidget::moveMade(int move, ConnectFourGame::PlayerColor color)
+{
+    m_chipYPos = 0;
+    m_pieceIndex = move;
+    m_currentPlayerColor = color;
+    startAnimation();
+}
+
+void GameboardWidget::updateBoard(const GameBoard &gameBoard)
+{
+    m_gameBoard = gameBoard;
 }
 
 void GameboardWidget::chipDropAnimation()
@@ -64,7 +78,10 @@ void GameboardWidget::chipDropAnimation()
             m_isAnimating = false;
             m_chipYPos = 0;
             m_animationTimer->stop();
-            m_game->makeMove(m_pieceIndex, m_game->getCurrentPlayerColor());
+//            if (m_humanPlayer) {
+//                emit humanMove(m_pieceIndex);
+//                deactivateHumanPlayer();
+//            }
         } else {
             m_bounces++;
             m_animationTimeMsecs = m_animationTimeout;
@@ -78,10 +95,10 @@ void GameboardWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    GameBoard board = m_game->getBoard();
-    for (int row = 0; row < board.getRowCount(); row++) {
-        GameBoardRow boardRow = board[row];
-        for (int col = 0; col < board.getColCount(); col++) {
+//    GameBoard board = m_game->getBoard();
+    for (int row = 0; row < m_gameBoard.getRowCount(); row++) {
+        GameBoardRow boardRow = m_gameBoard[row];
+        for (int col = 0; col < m_gameBoard.getColCount(); col++) {
             if (boardRow[col] != ConnectFourGame::EMPTY) {
                 QImage* chipImage = 0;
                 if (boardRow[col] == ConnectFourGame::BLACK)
@@ -99,9 +116,9 @@ void GameboardWidget::paintEvent(QPaintEvent *)
 
     if (m_humanPlayer ) {
         QImage* currentPlayerColor = 0;
-        if (m_game->getCurrentPlayerColor() == ConnectFourGame::BLACK)
+        if (m_currentPlayerColor == ConnectFourGame::BLACK)
             currentPlayerColor = &m_blackPiece;
-        else if (m_game->getCurrentPlayerColor() == ConnectFourGame::RED)
+        else if (m_currentPlayerColor == ConnectFourGame::RED)
             currentPlayerColor = &m_redPiece;
 
         if (currentPlayerColor != 0) {
@@ -135,27 +152,34 @@ void GameboardWidget::mouseMoveEvent(QMouseEvent *event)
 void GameboardWidget::mouseReleaseEvent(QMouseEvent *)
 {
     if (m_humanPlayer && !m_isAnimating) {
-        if (m_game->canMakeMove(m_pieceIndex)) {
-            m_animationFloor = calculateAnimationFloor();
-            m_animationTimer->start(m_animationTimeout);
-            m_isAnimating = true;
-            m_animationTimeMsecs = 0;
-            m_animationVelocity = 0;
-            m_chipBaseYPos = 0;
-            m_bounces = 0;
-            update();
-        }
+        emit humanMove(m_pieceIndex);
+        deactivateHumanPlayer();
+//        if (m_game->canMakeMove(m_pieceIndex)) {
+//            startAnimation();
+//        }
     }
 }
 
 double GameboardWidget::calculateAnimationFloor()
 {
     int bottomIndex = 0;
-    GameBoard board = m_game->getBoard();
-    while(board[bottomIndex][m_pieceIndex] != ConnectFourGame::EMPTY) {
+//    GameBoard board = m_game->getBoard();
+    while(m_gameBoard[bottomIndex][m_pieceIndex] != ConnectFourGame::EMPTY) {
         bottomIndex++;
     }
-    if (bottomIndex >= board.getRowCount())
+    if (bottomIndex >= m_gameBoard.getRowCount())
         return 0;
     return (m_boardHeight - ((bottomIndex*m_indexMultiplier)+m_topBoardOffset));
+}
+
+void GameboardWidget::startAnimation()
+{
+    m_animationFloor = calculateAnimationFloor();
+    m_animationTimer->start(m_animationTimeout);
+    m_isAnimating = true;
+    m_animationTimeMsecs = 0;
+    m_animationVelocity = 0;
+    m_chipBaseYPos = 0;
+    m_bounces = 0;
+    update();
 }
