@@ -56,12 +56,13 @@ void GameboardWidget::moveMade(int move, int color)
 {
     m_chipYPos = 0;
     m_pieceIndex = move;
-    m_currentPlayerColor = ConnectFourGame::PlayerColor(color);
+    m_animatedPlayerColor = ConnectFourGame::PlayerColor(color);
     startAnimation();
 }
 
 void GameboardWidget::updateBoard(const GameBoard &gameBoard)
 {
+    m_oldGameBoard = m_gameBoard;
     m_gameBoard = gameBoard;
 }
 
@@ -78,10 +79,6 @@ void GameboardWidget::chipDropAnimation()
             m_isAnimating = false;
             m_chipYPos = 0;
             m_animationTimer->stop();
-//            if (m_humanPlayer) {
-//                emit humanMove(m_pieceIndex);
-//                deactivateHumanPlayer();
-//            }
         } else {
             m_bounces++;
             m_animationTimeMsecs = m_animationTimeout;
@@ -94,11 +91,15 @@ void GameboardWidget::chipDropAnimation()
 void GameboardWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
+    GameBoard* board;
+    if (m_isAnimating)
+        board = &m_oldGameBoard;
+    else
+        board = &m_gameBoard;
 
-//    GameBoard board = m_game->getBoard();
-    for (int row = 0; row < m_gameBoard.getRowCount(); row++) {
-        GameBoardRow boardRow = m_gameBoard[row];
-        for (int col = 0; col < m_gameBoard.getColCount(); col++) {
+    for (int row = 0; row < board->getRowCount(); row++) {
+        GameBoardRow boardRow = (*board)[row];
+        for (int col = 0; col < board->getColCount(); col++) {
             if (boardRow[col] != ConnectFourGame::EMPTY) {
                 QImage* chipImage = 0;
                 if (boardRow[col] == ConnectFourGame::BLACK)
@@ -114,16 +115,21 @@ void GameboardWidget::paintEvent(QPaintEvent *)
         }
     }
 
-    if (m_humanPlayer ) {
-        QImage* currentPlayerColor = 0;
-        if (m_currentPlayerColor == ConnectFourGame::BLACK)
-            currentPlayerColor = &m_blackPiece;
-        else if (m_currentPlayerColor == ConnectFourGame::RED)
-            currentPlayerColor = &m_redPiece;
+    if (m_humanPlayer || m_isAnimating) {
+        QImage* chipImage = 0;
+        ConnectFourGame::PlayerColor color;
+        if (m_isAnimating)
+            color = m_animatedPlayerColor;
+        else
+            color = m_currentPlayerColor;
+        if (color == ConnectFourGame::BLACK)
+            chipImage = &m_blackPiece;
+        else if (color == ConnectFourGame::RED)
+            chipImage = &m_redPiece;
 
-        if (currentPlayerColor != 0) {
+        if (chipImage != 0) {
             double drawPiecePos = (m_pieceIndex*m_indexMultiplier)+m_leftBoardOffset;
-            painter.drawImage(drawPiecePos, m_chipYPos, (*currentPlayerColor));
+            painter.drawImage(drawPiecePos, m_chipYPos, (*chipImage));
         }
     }
 
@@ -154,16 +160,12 @@ void GameboardWidget::mouseReleaseEvent(QMouseEvent *)
     if (m_humanPlayer && !m_isAnimating) {
         emit humanMove(m_pieceIndex);
         deactivateHumanPlayer();
-//        if (m_game->canMakeMove(m_pieceIndex)) {
-//            startAnimation();
-//        }
     }
 }
 
 double GameboardWidget::calculateAnimationFloor()
 {
     int bottomIndex = 0;
-//    GameBoard board = m_game->getBoard();
     while(m_gameBoard[bottomIndex][m_pieceIndex] != ConnectFourGame::EMPTY) {
         bottomIndex++;
     }

@@ -42,7 +42,9 @@ private:
     double m_animationTimeMsecs;
     double m_animationFloor;
     GameBoard m_gameBoard;
+    GameBoard m_oldGameBoard;
     ConnectFourGame::PlayerColor m_currentPlayerColor;
+    ConnectFourGame::PlayerColor m_animatedPlayerColor;
     double m_chipBaseYPos;
     double m_bounces;
     double m_maxBounces;

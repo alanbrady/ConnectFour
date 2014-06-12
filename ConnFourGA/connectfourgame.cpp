@@ -215,9 +215,8 @@ void ConnectFourGame::doGameLoop()
         if (!canMakeMove(move)) {
             m_currentPlayer->badMoveMade();
         } else {
-
             makeMove(move, color);
-            emit moveMade(move, color);
+//            emit moveMade(move, color);
         }
         if (checkForWin())
             emit gameOver();
@@ -236,6 +235,7 @@ void ConnectFourGame::humanMoveMade(const int move)
     PlayerColor color = PlayerColor(m_currentPlayer->getColor());
     if (canMakeMove(move)) {
         makeMove(move, color);
+//        emit moveMade(move, color);
         if (checkForWin()) {
             emit gameOver();
         } else {
