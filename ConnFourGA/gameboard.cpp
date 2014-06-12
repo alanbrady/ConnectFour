@@ -2,6 +2,7 @@
 
 GameBoard::GameBoard()
 {
+    qRegisterMetaType<GameBoard>("GameBoard");
     clearBoard();
 }
 

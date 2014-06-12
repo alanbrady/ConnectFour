@@ -37,10 +37,10 @@ QSize GameboardWidget::minimumSizeHint() const
     return QSize(m_boardWidth, m_boardHeight);
 }
 
-void GameboardWidget::activateHumanPlayer(ConnectFourGame::PlayerColor color)
+void GameboardWidget::activateHumanPlayer(int color)
 {
     m_humanPlayer = true;
-    m_currentPlayerColor = color;
+    m_currentPlayerColor = ConnectFourGame::PlayerColor(color);
     setMouseTracking(true);
     update();
 }
@@ -52,11 +52,11 @@ void GameboardWidget::deactivateHumanPlayer()
     update();
 }
 
-void GameboardWidget::moveMade(int move, ConnectFourGame::PlayerColor color)
+void GameboardWidget::moveMade(int move, int color)
 {
     m_chipYPos = 0;
     m_pieceIndex = move;
-    m_currentPlayerColor = color;
+    m_currentPlayerColor = ConnectFourGame::PlayerColor(color);
     startAnimation();
 }
 

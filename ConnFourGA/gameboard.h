@@ -1,6 +1,7 @@
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
 
+#include <QObject>
 #include "gameboardrow.h"
 
 class GameBoard
@@ -19,5 +20,7 @@ private:
     GameBoardRow m_rows[6];
 
 };
+
+Q_DECLARE_METATYPE(GameBoard)
 
 #endif // GAMEBOARD_H

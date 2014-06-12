@@ -21,9 +21,9 @@ signals:
     void animationComplete();
 
 public slots:
-    void activateHumanPlayer(ConnectFourGame::PlayerColor color);
+    void activateHumanPlayer(int color);
     void deactivateHumanPlayer();
-    void moveMade(int move, ConnectFourGame::PlayerColor color);
+    void moveMade(int move, int color);
     void updateBoard(const GameBoard& gameBoard);
 
 private slots:

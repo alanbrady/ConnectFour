@@ -20,10 +20,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&m_game, SIGNAL(boardUpdated(GameBoard)),
             m_gameboard, SLOT(updateBoard(GameBoard)));
-    connect(&m_game, SIGNAL(getHumanMove(ConnectFourGame::PlayerColor)),
-            m_gameboard, SLOT(activateHumanPlayer(ConnectFourGame::PlayerColor)));
-    connect(&m_game, SIGNAL(moveMade(int,PlayerColor)),
-            m_gameboard, SLOT(moveMade(int,ConnectFourGame::PlayerColor)));
+    connect(&m_game, SIGNAL(getHumanMove(int)),
+            m_gameboard, SLOT(activateHumanPlayer(int)));
+    connect(&m_game, SIGNAL(moveMade(int,int)),
+            m_gameboard, SLOT(moveMade(int,int)));
     connect(m_gameboard, SIGNAL(humanMove(int)),
             &m_game, SLOT(humanMoveMade(int)));
     m_gameThread = new QThread;
@@ -36,4 +36,5 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    m_gameThread->quit();
 }
