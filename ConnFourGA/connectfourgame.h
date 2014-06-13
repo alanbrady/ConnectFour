@@ -25,7 +25,7 @@ public:
 
 signals:
     void error(QString errorMsg);
-    void moveMade(int move, int color);
+    void moveMade(int move, int color, GameBoard oldBoard);
     void gameOver();
     void getHumanMove(int color);
     void boardUpdated(const GameBoard& board);

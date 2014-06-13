@@ -22,8 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
             m_gameboard, SLOT(updateBoard(GameBoard)));
     connect(&m_game, SIGNAL(getHumanMove(int)),
             m_gameboard, SLOT(activateHumanPlayer(int)));
-    connect(&m_game, SIGNAL(moveMade(int,int)),
-            m_gameboard, SLOT(moveMade(int,int)));
+    connect(&m_game, SIGNAL(moveMade(int,int,GameBoard)),
+            m_gameboard, SLOT(moveMade(int,int,GameBoard)));
     connect(m_gameboard, SIGNAL(humanMove(int)),
             &m_game, SLOT(humanMoveMade(int)));
     m_gameThread = new QThread;
@@ -37,4 +37,5 @@ MainWindow::~MainWindow()
 {
     delete ui;
     m_gameThread->quit();
+    m_gameThread->wait();
 }

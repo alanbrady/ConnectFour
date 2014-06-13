@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QTimer>
 #include "connectfourgame.h"
+#include "animationqueue.h"
 
 
 class GameboardWidget : public QWidget
@@ -23,7 +24,7 @@ signals:
 public slots:
     void activateHumanPlayer(int color);
     void deactivateHumanPlayer();
-    void moveMade(int move, int color);
+    void moveMade(int move, int color, GameBoard board);
     void updateBoard(const GameBoard& gameBoard);
 
 private slots:
@@ -42,9 +43,11 @@ private:
     double m_animationTimeMsecs;
     double m_animationFloor;
     GameBoard m_gameBoard;
-    GameBoard m_oldGameBoard;
+//    GameBoard m_oldGameBoard;
     ConnectFourGame::PlayerColor m_currentPlayerColor;
     ConnectFourGame::PlayerColor m_animatedPlayerColor;
+    AnimationItem* m_currentAnimation;
+    AnimationQueue m_animationQueue;
     double m_chipBaseYPos;
     double m_bounces;
     double m_maxBounces;

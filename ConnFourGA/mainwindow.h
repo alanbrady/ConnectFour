@@ -6,6 +6,7 @@
 #include "gameboardwidget.h"
 #include "connectfourgame.h"
 #include "humanplayer.h"
+#include "randomplayer.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,7 +30,7 @@ private:
     QThread* m_gameThread;
 
     HumanPlayer playerOne;
-    HumanPlayer playerTwo;
+    RandomPlayer playerTwo;
 };
 
 #endif // MAINWINDOW_H

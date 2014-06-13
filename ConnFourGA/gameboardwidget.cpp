@@ -42,6 +42,7 @@ void GameboardWidget::activateHumanPlayer(int color)
     m_humanPlayer = true;
     m_currentPlayerColor = ConnectFourGame::PlayerColor(color);
     setMouseTracking(true);
+
     update();
 }
 
@@ -52,17 +53,16 @@ void GameboardWidget::deactivateHumanPlayer()
     update();
 }
 
-void GameboardWidget::moveMade(int move, int color)
+void GameboardWidget::moveMade(int move, int color, GameBoard board)
 {
-    m_chipYPos = 0;
-    m_pieceIndex = move;
-    m_animatedPlayerColor = ConnectFourGame::PlayerColor(color);
+//    m_chipYPos = 0;
+//    m_pieceIndex = move;
+    m_animationQueue.add(move, board, color);
     startAnimation();
 }
 
 void GameboardWidget::updateBoard(const GameBoard &gameBoard)
 {
-    m_oldGameBoard = m_gameBoard;
     m_gameBoard = gameBoard;
 }
 
@@ -79,6 +79,22 @@ void GameboardWidget::chipDropAnimation()
             m_isAnimating = false;
             m_chipYPos = 0;
             m_animationTimer->stop();
+            double mouseX = this->mapFromGlobal(QCursor::pos()).x();
+            if (mouseX >= m_leftBoardOffset &&
+                mouseX <= (m_boardWidth + m_rightBoardOffset)) {
+
+                int newPieceIndex =
+                        (mouseX - m_leftBoardOffset - m_rightBoardOffset)
+                        /m_indexMultiplier;
+                if (newPieceIndex < 7 && newPieceIndex != m_pieceIndex) {
+                    m_pieceIndex = newPieceIndex;
+                    update();
+                }
+            }
+            delete m_currentAnimation;
+            m_currentAnimation = m_animationQueue.next();
+            if (m_currentAnimation != 0)
+                startAnimation();
         } else {
             m_bounces++;
             m_animationTimeMsecs = m_animationTimeout;
@@ -91,15 +107,15 @@ void GameboardWidget::chipDropAnimation()
 void GameboardWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    GameBoard* board;
+    GameBoard board;
     if (m_isAnimating)
-        board = &m_oldGameBoard;
+        board = m_currentAnimation->getBoard();
     else
-        board = &m_gameBoard;
+        board = m_gameBoard;
 
-    for (int row = 0; row < board->getRowCount(); row++) {
-        GameBoardRow boardRow = (*board)[row];
-        for (int col = 0; col < board->getColCount(); col++) {
+    for (int row = 0; row < board.getRowCount(); row++) {
+        GameBoardRow boardRow = board[row];
+        for (int col = 0; col < board.getColCount(); col++) {
             if (boardRow[col] != ConnectFourGame::EMPTY) {
                 QImage* chipImage = 0;
                 if (boardRow[col] == ConnectFourGame::BLACK)
@@ -118,17 +134,21 @@ void GameboardWidget::paintEvent(QPaintEvent *)
     if (m_humanPlayer || m_isAnimating) {
         QImage* chipImage = 0;
         ConnectFourGame::PlayerColor color;
-        if (m_isAnimating)
-            color = m_animatedPlayerColor;
-        else
+        int move = -1;
+        if (m_isAnimating) {
+            color = ConnectFourGame::PlayerColor(m_currentAnimation->getColor());
+            move = m_currentAnimation->getMove();
+        } else {
             color = m_currentPlayerColor;
+            move = m_pieceIndex;
+        }
         if (color == ConnectFourGame::BLACK)
             chipImage = &m_blackPiece;
         else if (color == ConnectFourGame::RED)
             chipImage = &m_redPiece;
 
         if (chipImage != 0) {
-            double drawPiecePos = (m_pieceIndex*m_indexMultiplier)+m_leftBoardOffset;
+            double drawPiecePos = (move*m_indexMultiplier)+m_leftBoardOffset;
             painter.drawImage(drawPiecePos, m_chipYPos, (*chipImage));
         }
     }
@@ -166,22 +186,29 @@ void GameboardWidget::mouseReleaseEvent(QMouseEvent *)
 double GameboardWidget::calculateAnimationFloor()
 {
     int bottomIndex = 0;
-    while(m_gameBoard[bottomIndex][m_pieceIndex] != ConnectFourGame::EMPTY) {
+    GameBoard board = m_currentAnimation->getBoard();
+    int move = m_currentAnimation->getMove();
+    while(board[bottomIndex][move] != ConnectFourGame::EMPTY) {
         bottomIndex++;
     }
-    if (bottomIndex >= m_gameBoard.getRowCount())
+    if (bottomIndex >= board.getRowCount())
         return 0;
     return (m_boardHeight - ((bottomIndex*m_indexMultiplier)+m_topBoardOffset));
 }
 
 void GameboardWidget::startAnimation()
 {
-    m_animationFloor = calculateAnimationFloor();
-    m_animationTimer->start(m_animationTimeout);
-    m_isAnimating = true;
-    m_animationTimeMsecs = 0;
-    m_animationVelocity = 0;
-    m_chipBaseYPos = 0;
-    m_bounces = 0;
-    update();
+    if (!m_isAnimating) {
+        if (m_currentAnimation == 0)
+            m_currentAnimation = m_animationQueue.next();
+        m_animationFloor = calculateAnimationFloor();
+        m_animationTimer->start(m_animationTimeout);
+        m_isAnimating = true;
+        m_animationTimeMsecs = 0;
+        m_animationVelocity = 0;
+        m_chipBaseYPos = 0;
+        m_bounces = 0;
+        m_chipYPos = 0;
+        update();
+    }
 }

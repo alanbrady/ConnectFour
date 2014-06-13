@@ -111,8 +111,8 @@ bool ConnectFourGame::makeMove(const int col, ConnectFourGame::PlayerColor color
         int i = 0;
         while (m_board[i][col] != 0)
             i++;
+        emit moveMade(col, color, m_board);
         m_board[i][col] = color;
-        emit moveMade(col, color);
         emit boardUpdated(m_board);
         return true;
     } else
@@ -216,7 +216,6 @@ void ConnectFourGame::doGameLoop()
             m_currentPlayer->badMoveMade();
         } else {
             makeMove(move, color);
-//            emit moveMade(move, color);
         }
         if (checkForWin())
             emit gameOver();
@@ -225,9 +224,6 @@ void ConnectFourGame::doGameLoop()
             doGameLoop();
         }
     }
-
-
-
 }
 
 void ConnectFourGame::humanMoveMade(const int move)
@@ -235,7 +231,6 @@ void ConnectFourGame::humanMoveMade(const int move)
     PlayerColor color = PlayerColor(m_currentPlayer->getColor());
     if (canMakeMove(move)) {
         makeMove(move, color);
-//        emit moveMade(move, color);
         if (checkForWin()) {
             emit gameOver();
         } else {
