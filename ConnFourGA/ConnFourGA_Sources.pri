@@ -4,7 +4,8 @@ SOURCES += ../ConnFourGA/connectfourgame.cpp \
     ../ConnFourGA/gameboardrow.cpp \
     randomplayer.cpp \
     animationqueue.cpp \
-    animationitem.cpp
+    animationitem.cpp \
+    gaplayer.cpp
 
 HEADERS  += ../ConnFourGA/connectfourgame.h \
     ../ConnFourGA/gameboard.h \
@@ -13,6 +14,7 @@ HEADERS  += ../ConnFourGA/connectfourgame.h \
     randomplayer.h \
     humanplayer.h \
     animationqueue.h \
-    animationitem.h
+    animationitem.h \
+    gaplayer.h
 
 

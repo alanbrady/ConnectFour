@@ -29,7 +29,7 @@ private:
     ConnectFourGame m_game;
     QThread* m_gameThread;
 
-    HumanPlayer playerOne;
+    RandomPlayer playerOne;
     RandomPlayer playerTwo;
 };
 

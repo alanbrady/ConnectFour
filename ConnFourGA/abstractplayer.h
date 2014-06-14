@@ -19,7 +19,7 @@ public:
     void setPlayerColor(int color) { m_color = color; }
 
     virtual int getPlayerMove(const GameBoard& board) = 0;
-    virtual bool isHuman() const = 0;
+    virtual bool isHuman() const { return false; }
     virtual void badMoveMade() {}
 
 private:
