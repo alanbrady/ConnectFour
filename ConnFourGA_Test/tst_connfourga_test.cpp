@@ -6,15 +6,19 @@
 #include "gameboard.h"
 #include "gameboardrow.h"
 #include "mockplayer.h"
-#include "randomplayer.h"
+//#include "randomplayer.h"
+#include "gaplayer.h"
 
-Q_DECLARE_METATYPE(GameBoard)
+//Q_DECLARE_METATYPE(GameBoard)
 
 class ConnFourGA_Test : public QObject
 {
     Q_OBJECT
 public:
     ConnFourGA_Test();
+
+private:
+    char* buildChromosome();
 
 private Q_SLOTS:
     void connectFourGame_checkForWin();
@@ -24,11 +28,51 @@ private Q_SLOTS:
     void abstractPlayer_getColor();
     void abstractPlayer_isHuman();
     void randomPlayer_getMove();
+    void gaPlayer_chromosome();
+    void gaPlayer_blockDouble();
 };
 
 ConnFourGA_Test::ConnFourGA_Test()
 {
-    qRegisterMetaType<GameBoard>("GameBoard");
+    //    qRegisterMetaType<GameBoard>("GameBoard");
+}
+
+char *ConnFourGA_Test::buildChromosome()
+{
+    char* chromosome = new char[9*sizeof(double)+1];
+    char* chromosomeBegin = chromosome;
+    double blockDouble = 1.5;
+    double blockTriple = 2.3;
+    double blockQuad = 4.6;
+    double makeDouble = 5.3;
+    double makeTriple = 3.2;
+    double makeQuad = 0.6;
+    double nextMoveDouble = 1.1;
+    double nextMoveTriple = 2.1;
+    double nextMoveQuad = 7.3;
+    int firstMove = 5;
+    memcpy(chromosome, &blockDouble, sizeof(double));
+    chromosome += sizeof(double);
+    memcpy(chromosome, &blockTriple, sizeof(double));
+    chromosome += sizeof(double);
+    memcpy(chromosome, &blockQuad, sizeof(double));
+    chromosome += sizeof(double);
+    memcpy(chromosome, &makeDouble, sizeof(double));
+    chromosome += sizeof(double);
+    memcpy(chromosome, &makeTriple, sizeof(double));
+    chromosome += sizeof(double);
+    memcpy(chromosome, &makeQuad, sizeof(double));
+    chromosome += sizeof(double);
+    memcpy(chromosome, &nextMoveDouble, sizeof(double));
+    chromosome += sizeof(double);
+    memcpy(chromosome, &nextMoveTriple, sizeof(double));
+    chromosome += sizeof(double);
+    memcpy(chromosome, &nextMoveQuad, sizeof(double));
+    chromosome += sizeof(double);
+    chromosome = chromosomeBegin;
+    chromosome[9*sizeof(double)] = (char)(firstMove & 0xFF);
+
+    return chromosome;
 }
 
 void ConnFourGA_Test::connectFourGame_checkForWin()
@@ -157,25 +201,23 @@ void ConnFourGA_Test::connectFourGame_makeMove()
 void ConnFourGA_Test::abstractPlayer_getPlayerMove()
 {
     GameBoard board;
-    MockPlayer player(&board);
+    MockPlayer player;
 
-    int m = player.getPlayerMove();
+    int m = player.getPlayerMove(board);
     QVERIFY(m >= 0 && m <= 6);
 
 }
 
 void ConnFourGA_Test::abstractPlayer_getColor()
 {
-    GameBoard board;
-    MockPlayer player(&board);
+    MockPlayer player;
 
     QVERIFY(player.getColor() == ConnectFourGame::BLACK);
 }
 
 void ConnFourGA_Test::abstractPlayer_isHuman()
 {
-    GameBoard board;
-    MockPlayer player(&board);
+    MockPlayer player;
 
     QVERIFY(player.isHuman() == false);
 }
@@ -204,6 +246,59 @@ void ConnFourGA_Test::randomPlayer_getMove()
     QVERIFY(move >= 0 && move <= 6);
     move = player.getPlayerMove(board);
     QVERIFY(move >= 0 && move <= 6);
+}
+
+void ConnFourGA_Test::gaPlayer_chromosome()
+{
+    char* chromosome = buildChromosome();
+
+    double blockDouble = 1.5;
+    double blockTriple = 2.3;
+    double blockQuad = 4.6;
+    double makeDouble = 5.3;
+    double makeTriple = 3.2;
+    double makeQuad = 0.6;
+    double nextMoveDouble = 1.1;
+    double nextMoveTriple = 2.1;
+    double nextMoveQuad = 7.3;
+    int firstMove = 5;
+
+    GAPlayer player(chromosome);
+    QCOMPARE(player.getBlockDouble(), blockDouble);
+    QCOMPARE(player.getBlockTriple(), blockTriple);
+    QCOMPARE(player.getBlockQuad(), blockQuad);
+    QCOMPARE(player.getMakesDouble(), makeDouble);
+    QCOMPARE(player.getMakesTriple(), makeTriple);
+    QCOMPARE(player.getMakesQuad(), makeQuad);
+    QCOMPARE(player.getNextMoveDouble(), nextMoveDouble);
+    QCOMPARE(player.getNextMoveTriple(), nextMoveTriple);
+    QCOMPARE(player.getNextMoveQuad(), nextMoveQuad);
+    QCOMPARE(player.getFirstMove(), firstMove);
+
+    delete[] chromosome;
+}
+
+void ConnFourGA_Test::gaPlayer_blockDouble()
+{
+    GameBoard board;
+    board[0][0] = ConnectFourGame::BLACK;
+    board[0][2] = ConnectFourGame::BLACK;
+
+    char* chromosome = buildChromosome();
+    GAPlayer player(chromosome);
+    player.setPlayerColor(ConnectFourGame::RED);
+    player.getPlayerMove(board);
+
+    QCOMPARE(player.blocksDouble(1), 2);
+
+    board[0][1] = ConnectFourGame::BLACK;
+    board[1][0] = ConnectFourGame::BLACK;
+    board[1][2] = ConnectFourGame::BLACK;
+    player.getPlayerMove(board);
+
+    QCOMPARE(player.blocksDouble(1), 5);
+
+    delete[] chromosome;
 }
 
 QTEST_APPLESS_MAIN(ConnFourGA_Test)
