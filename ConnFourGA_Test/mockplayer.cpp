@@ -2,12 +2,12 @@
 
 #include <cstdlib>
 
-MockPlayer::MockPlayer(GameBoard *board)
-    : AbstractPlayer(board, ConnectFourGame::BLACK)
+MockPlayer::MockPlayer()
+    : AbstractPlayer(1)
 {
 }
 
-int MockPlayer::getPlayerMove()
+int MockPlayer::getPlayerMove(const GameBoard &board)
 {
     std::srand(0);
     return std::rand()%7;

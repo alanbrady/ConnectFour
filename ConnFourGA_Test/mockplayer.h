@@ -6,9 +6,9 @@
 class MockPlayer : public AbstractPlayer
 {
 public:
-    MockPlayer(GameBoard* board);
+    MockPlayer();
 
-    int getPlayerMove();
+    int getPlayerMove(const GameBoard& board);
 
     bool isHuman() { return false; }
 };
