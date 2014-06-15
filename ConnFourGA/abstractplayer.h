@@ -2,9 +2,6 @@
 #define ABSTRACTPLAYER_H
 
 #include "gameboard.h"
-//#include "connectfourgame.h"
-
-//class ConnectFourGame;
 
 class AbstractPlayer {
 public:

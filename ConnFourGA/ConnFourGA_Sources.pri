@@ -2,19 +2,19 @@
 SOURCES += ../ConnFourGA/connectfourgame.cpp \
     ../ConnFourGA/gameboard.cpp \
     ../ConnFourGA/gameboardrow.cpp \
-    randomplayer.cpp \
-    animationqueue.cpp \
-    animationitem.cpp \
-    gaplayer.cpp
+    ../ConnFourGA/randomplayer.cpp \
+    ../ConnFourGA/animationqueue.cpp \
+    ../ConnFourGA/animationitem.cpp \
+    ../ConnFourGA/gaplayer.cpp
 
 HEADERS  += ../ConnFourGA/connectfourgame.h \
     ../ConnFourGA/gameboard.h \
     ../ConnFourGA/gameboardrow.h \
-    abstractplayer.h \
-    randomplayer.h \
-    humanplayer.h \
-    animationqueue.h \
-    animationitem.h \
-    gaplayer.h
+    ../ConnFourGA/abstractplayer.h \
+    ../ConnFourGA/randomplayer.h \
+    ../ConnFourGA/humanplayer.h \
+    ../ConnFourGA/animationqueue.h \
+    ../ConnFourGA/animationitem.h \
+    ../ConnFourGA/gaplayer.h
 
 
