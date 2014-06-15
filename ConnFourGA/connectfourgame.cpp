@@ -66,6 +66,16 @@ bool ConnectFourGame::checkForWin() const
     return false;
 }
 
+bool ConnectFourGame::checkForDraw() const
+{
+    GameBoardRow row = m_board[5];
+    for (int i = 0; i < 7; i++) {
+        if (row[i] == EMPTY)
+            return false;
+    }
+    return true;
+}
+
 int ConnectFourGame::countConnsRight(const int row, const int col) const
 {
     if (col < 6 && m_board[row][col+1] ==  m_board[row][col])
@@ -121,7 +131,7 @@ bool ConnectFourGame::makeMove(const int col, ConnectFourGame::PlayerColor color
 
 bool ConnectFourGame::canMakeMove(const int col)
 {
-    return m_board[5][col] == 0 && col >= 0 && col <= 6;
+    return col >= 0 && col <= 6 && m_board[5][col] == EMPTY;
 }
 
 void ConnectFourGame::setPlayers(AbstractPlayer *playerOne, AbstractPlayer *playerTwo)
@@ -217,9 +227,11 @@ void ConnectFourGame::doGameLoop()
         } else {
             makeMove(move, color);
         }
-        if (checkForWin())
+        if (checkForWin()) {
             emit gameOver();
-        else {
+        } else if (checkForDraw()) {
+            emit gameOver();
+        } else {
             swapCurrentPlayer();
             doGameLoop();
         }

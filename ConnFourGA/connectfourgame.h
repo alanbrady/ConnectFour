@@ -41,6 +41,7 @@ public:
 
     ConnectFourGame::PlayerColor getColorAt(const int row, const int col);
     bool checkForWin() const;
+    bool checkForDraw() const;
     int countConnsRight(const int row, const int col) const;
     int countConnsDiagRight(const int row, const int col) const;
     int countConnsDiagLeft(const int row, const int col) const;
