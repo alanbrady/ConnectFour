@@ -26,7 +26,7 @@ public:
     bool isValidMove(int move) const;
     int blocksDouble(int move);
     int blocksTriple(int move);
-    int blocksQuad(int mvoe);
+    int blocksQuad(int move);
     int makesDouble(int move);
     int makesTriple(int move);
     int makesQuad(int move);

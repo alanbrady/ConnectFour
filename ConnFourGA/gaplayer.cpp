@@ -150,16 +150,61 @@ int GAPlayer::blocksTriple(int move)
     return numTriples;
 }
 
-int GAPlayer::blocksQuad(int mvoe)
+int GAPlayer::blocksQuad(int move)
 {
-    // TODO
-    return false;
+    int bottomRow = getBottomRow(move);
+    int numQuads = 0;
+    ConnectFourGame::PlayerColor opponentColor = getOpponentColor();
+
+    if (move < 4) {
+        if (m_board[bottomRow][move+1] == opponentColor &&
+                m_board[bottomRow][move+2] == opponentColor &&
+                m_board[bottomRow][move+3] == opponentColor)
+            numQuads++;
+        if (bottomRow < 3)
+            if (m_board[bottomRow+1][move+1] == opponentColor &&
+                    m_board[bottomRow+2][move+2] == opponentColor &&
+                    m_board[bottomRow+3][move+3] == opponentColor)
+                numQuads++;
+        if (bottomRow > 2)
+            if (m_board[bottomRow-1][move+1] == opponentColor &&
+                    m_board[bottomRow-2][move+2] == opponentColor &&
+                    m_board[bottomRow-3][move+3] == opponentColor)
+                numQuads++;
+    }
+
+    if (move > 2) {
+        if (m_board[bottomRow][move-1] == opponentColor &&
+                m_board[bottomRow][move-2] == opponentColor &&
+                m_board[bottomRow][move-3] == opponentColor)
+            numQuads++;
+        if (bottomRow < 3)
+            if (m_board[bottomRow+1][move-1] == opponentColor &&
+                    m_board[bottomRow+2][move-2] == opponentColor &&
+                    m_board[bottomRow+3][move-3] == opponentColor)
+                numQuads++;
+        if (bottomRow > 2)
+            if (m_board[bottomRow-1][move-1] == opponentColor &&
+                    m_board[bottomRow-2][move-2] == opponentColor &&
+                    m_board[bottomRow-3][move-3] == opponentColor)
+                numQuads++;
+    }
+    if (bottomRow > 2) {
+        if (m_board[bottomRow-1][move] == opponentColor &&
+                m_board[bottomRow-2][move] == opponentColor &&
+                m_board[bottomRow-3][move] == opponentColor)
+            numQuads++;
+    }
+
+    return numQuads;
 }
 
 int GAPlayer::makesDouble(int move)
 {
-    // TODO
-    return false;
+//    ConnectFourGame::PlayerColor color = getColor();
+//    int numDoubles = 0;
+
+
 }
 
 int GAPlayer::makesTriple(int move)
