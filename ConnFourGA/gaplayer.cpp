@@ -201,7 +201,7 @@ int GAPlayer::blocksQuad(int move)
 
 int GAPlayer::makesDouble(int move)
 {
-    ConnectFourGame::PlayerColor color = getColor();
+    ConnectFourGame::PlayerColor color = (ConnectFourGame::PlayerColor)getColor();
     int numDoubles = 0;
     int bottomRow = getBottomRow(move);
 
@@ -242,7 +242,7 @@ int GAPlayer::makesTriple(int move)
 {
     int bottomRow = getBottomRow(move);
     int numTriples = 0;
-    ConnectFourGame::PlayerColor color = getColor();
+    ConnectFourGame::PlayerColor color = (ConnectFourGame::PlayerColor)getColor();
 
     if (move > 1) {
         if (bottomRow < 4) {
@@ -299,26 +299,85 @@ int GAPlayer::makesTriple(int move)
 
 int GAPlayer::makesQuad(int move)
 {
-    // TODO
-    return false;
+    int bottomRow = getBottomRow(move);
+    int numQuads = 0;
+    ConnectFourGame::PlayerColor color = (ConnectFourGame::PlayerColor)getColor();
+
+    if (move < 4) {
+        if (m_board[bottomRow][move+1] == color &&
+                m_board[bottomRow][move+2] == color &&
+                m_board[bottomRow][move+3] == color)
+            numQuads++;
+        if (bottomRow < 3)
+            if (m_board[bottomRow+1][move+1] == color &&
+                    m_board[bottomRow+2][move+2] == color &&
+                    m_board[bottomRow+3][move+3] == color)
+                numQuads++;
+        if (bottomRow > 2)
+            if (m_board[bottomRow-1][move+1] == color &&
+                    m_board[bottomRow-2][move+2] == color &&
+                    m_board[bottomRow-3][move+3] == color)
+                numQuads++;
+    }
+
+    if (move > 2) {
+        if (m_board[bottomRow][move-1] == color &&
+                m_board[bottomRow][move-2] == color &&
+                m_board[bottomRow][move-3] == color)
+            numQuads++;
+        if (bottomRow < 3)
+            if (m_board[bottomRow+1][move-1] == color &&
+                    m_board[bottomRow+2][move-2] == color &&
+                    m_board[bottomRow+3][move-3] == color)
+                numQuads++;
+        if (bottomRow > 2)
+            if (m_board[bottomRow-1][move-1] == color &&
+                    m_board[bottomRow-2][move-2] == color &&
+                    m_board[bottomRow-3][move-3] == color)
+                numQuads++;
+    }
+    if (bottomRow > 2) {
+        if (m_board[bottomRow-1][move] == color &&
+                m_board[bottomRow-2][move] == color &&
+                m_board[bottomRow-3][move] == color)
+            numQuads++;
+    }
+
+    return numQuads;
 }
 
 int GAPlayer::nextMoveMakesDouble(int move)
 {
-    // TODO
-    return false;
+    GameBoard currentBoard = m_board;
+    int bottomRow = getBottomRow(move);
+    m_board[bottomRow][move];
+
+    int numDoubles = blocksDouble(move);
+    m_board = currentBoard;
+    return numDoubles;
+
 }
 
 int GAPlayer::nextMoveMakesTriple(int move)
 {
-    // TODO
-    return false;
+    GameBoard currentBoard = m_board;
+    int bottomRow = getBottomRow(move);
+    m_board[bottomRow][move];
+
+    int numTriples = blocksTriple(move);
+    m_board = currentBoard;
+    return numTriples;
 }
 
 int GAPlayer::nextMoveMakesQuad(int move)
 {
-    // TODO
-    return false;
+    GameBoard currentBoard = m_board;
+    int bottomRow = getBottomRow(move);
+    m_board[bottomRow][move];
+
+    int numQuads = blocksQuad(move);
+    m_board = currentBoard;
+    return numQuads;
 }
 
 void GAPlayer::interpretChromosome()
