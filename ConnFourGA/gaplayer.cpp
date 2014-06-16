@@ -55,11 +55,7 @@ int GAPlayer::blocksDouble(int move)
 {
     int bottomRow = getBottomRow(move);
     int numDoubles = 0;
-    ConnectFourGame::PlayerColor opponentColor;
-    if (getColor() == ConnectFourGame::BLACK)
-        opponentColor = ConnectFourGame::RED;
-    else
-        opponentColor = ConnectFourGame::BLACK;
+    ConnectFourGame::PlayerColor opponentColor = getOpponentColor();
 
     if (move > 0) {
         if (bottomRow < 5) {
@@ -97,8 +93,61 @@ int GAPlayer::blocksDouble(int move)
 
 int GAPlayer::blocksTriple(int move)
 {
-    // TODO
-    return false;
+    int bottomRow = getBottomRow(move);
+    int numTriples = 0;
+    ConnectFourGame::PlayerColor opponentColor = getOpponentColor();
+
+    if (move > 1) {
+        if (bottomRow < 4) {
+            if (m_board[bottomRow+1][move-1] == opponentColor &&
+                    m_board[bottomRow+2][move-2] == opponentColor)
+                numTriples++;
+        }
+        if (bottomRow > 1) {
+            if (m_board[bottomRow-1][move-1] == opponentColor &&
+                    m_board[bottomRow-2][move-2] == opponentColor)
+                numTriples++;
+        }
+        if (m_board[bottomRow][move-1] == opponentColor &&
+                m_board[bottomRow][move-2] == opponentColor)
+            numTriples++;
+    }
+
+    if (move < 5) {
+        if (bottomRow < 4) {
+            if (m_board[bottomRow+1][move+1] == opponentColor &&
+                    m_board[bottomRow+2][move+2] == opponentColor)
+                numTriples++;
+        }
+        if (bottomRow > 1) {
+            if (m_board[bottomRow-1][move+1] == opponentColor &&
+                    m_board[bottomRow-2][move+2] == opponentColor)
+                numTriples++;
+        }
+        if (m_board[bottomRow][move+1] == opponentColor &&
+                m_board[bottomRow][move+2] == opponentColor)
+            numTriples++;
+    }
+
+    if (bottomRow > 1)
+        if (m_board[bottomRow-1][move] == opponentColor &&
+                m_board[bottomRow-2][move] == opponentColor)
+            numTriples++;
+
+    if (move > 0 && move < 6) {
+        if (bottomRow > 0 && bottomRow < 5) {
+            if (m_board[bottomRow+1][move-1] == opponentColor &&
+                    m_board[bottomRow-1][move+1] == opponentColor)
+                numTriples++;
+            if (m_board[bottomRow+1][move+1] == opponentColor &&
+                    m_board[bottomRow-1][move-1])
+                numTriples++;
+        }
+        if (m_board[bottomRow][move-1] == opponentColor &&
+                m_board[bottomRow][move+1] == opponentColor)
+            numTriples++;
+    }
+    return numTriples;
 }
 
 int GAPlayer::blocksQuad(int mvoe)
@@ -175,4 +224,12 @@ int GAPlayer::getBottomRow(int col)
             return row;
     }
     return -1;
+}
+
+ConnectFourGame::PlayerColor GAPlayer::getOpponentColor()
+{
+    if (getColor() == ConnectFourGame::BLACK)
+        return ConnectFourGame::RED;
+    else
+        return ConnectFourGame::BLACK;
 }

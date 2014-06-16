@@ -49,10 +49,9 @@ private:
 
     GameBoard m_board;
 
-
-
     void interpretChromosome();
     int getBottomRow(int col);
+    ConnectFourGame::PlayerColor getOpponentColor();
 };
 
 #endif // GAPLAYER_H
