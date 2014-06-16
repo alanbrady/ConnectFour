@@ -31,6 +31,7 @@ private Q_SLOTS:
     void gaPlayer_chromosome();
     void gaPlayer_blocksDouble();
     void gaPlayer_blocksTriple();
+    void gaPlayer_blocksQuad();
 };
 
 ConnFourGA_Test::ConnFourGA_Test()
@@ -297,6 +298,24 @@ void ConnFourGA_Test::gaPlayer_blocksTriple()
     player.getPlayerMove(board);
 
     QCOMPARE(player.blocksTriple(2), 2);
+
+    delete[] chromosome;
+}
+
+void ConnFourGA_Test::gaPlayer_blocksQuad()
+{
+    GameBoard board;
+
+    board[0][0] = ConnectFourGame::BLACK;
+    board[0][1] = ConnectFourGame::BLACK;
+    board[0][2] = ConnectFourGame::BLACK;
+
+    char* chromosome = buildChromosome();
+    GAPlayer player(chromosome);
+    player.setPlayerColor(ConnectFourGame::RED);
+    player.getPlayerMove(board);
+
+    QCOMPARE(player.blocksQuad(3), 1);
 
     delete[] chromosome;
 }
